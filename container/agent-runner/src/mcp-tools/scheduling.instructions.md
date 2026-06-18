@@ -6,6 +6,12 @@ To inspect or change existing tasks, use `list_tasks` (returns one row per serie
 
 Frequent recurring scheduled tasks — more than a few times a day — consume API credits and can risk account restrictions. You can add a `script` that runs first, and you will only be called when the check passes.
 
+### When a task fires
+
+When you receive a `<task>` inbound message (a scheduled task firing), deliver output using **only** `<message to="...">` blocks in your final response. Do NOT call `send_message` for the same content — that sends the message twice. The `<message>` block IS the delivery; `send_message` is for mid-turn progress updates during long work, not for task outputs.
+
+Also reply only to the destination the task came `from`. Do not fan out to other destinations unless the task prompt explicitly asks for it.
+
 ### How it works
 
 1. Provide a bash `script` alongside the `prompt` when scheduling
